@@ -1,10 +1,12 @@
 import { Router } from 'express';
 import statusRoutes from './status';
+import searchRoutes from './search';
 
 const router = Router();
 
 const services = [
   { path: 'status', route: statusRoutes },
+  { path: 'search', route: searchRoutes },
 ];
 
 services.forEach(({ path, route }) => {
