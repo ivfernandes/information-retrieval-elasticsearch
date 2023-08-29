@@ -22,6 +22,10 @@
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.9.0",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.6",
+    "@mui/material": "^5.14.6",
     "config": "^3.3.9",
     "cors": "^2.8.5",
     "envalid": "^7.3.1",
