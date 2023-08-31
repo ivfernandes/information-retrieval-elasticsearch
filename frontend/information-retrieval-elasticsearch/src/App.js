@@ -1,13 +1,15 @@
 import React from 'react';
-import { Router, Route, Navigate } from 'react-router-dom';
-import Main from './Pages/Main';
+import { Route, Routes, Navigate } from 'react-router-dom';
+import Search from './Pages/Search';
+import SearchResult from './Pages/SearchResult';
 
 function App() {
   return (
-    <Router>
-        <Route path="/" element={<Main />} />
+    <Routes>
+        <Route path="/" element={<Search />} />
+        <Route path="/:terms" element={<SearchResult />}/>
         <Route path="*" element={<Navigate to="/" replace />} />
-    </Router>
+    </Routes>
   );
 }
 
