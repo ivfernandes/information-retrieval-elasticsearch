@@ -21,7 +21,7 @@ function SearchResult() {
 
     useEffect(() => {
         fetchTerm(terms);
-      }, []);
+      }, [terms]);
 
     const fetchTerm = async (term) => {
         setIsLoading(true);
@@ -110,7 +110,7 @@ function SearchResult() {
                                         variant="body2"
                                         color="text.primary"
                                     >
-                                        {result._source.body}
+                                        {result._source.body.length > 500 ? `${result._source.body.slice(0, 500)}...` : result._source.body}
                                     </Typography>
                                 </Fragment>
                             }
