@@ -17,19 +17,6 @@ export default class ElasticSearchService {
     });
   }
 
-  async findAll(index: string) {
-    const result = await this.client.search({
-      index: index,
-      body: {
-        query: {
-          match_all: {},
-        },
-      },
-    });
-
-    return result.hits.hits;
-  }
-
   async search(index: string, query: string) {
     const result = await this.client.search({
       index: index,
