@@ -9,7 +9,7 @@
     "start:prod": "cross-env NODE_ENV=production npm start",
     "start:entrypoint:prod": "bash entrypoint.sh npm run start:prod",
     "start:dev": "cross-env NODE_ENV=development nodemon",
-    "start:entrypoint:dev": "bash entrypoint.sh npm run start:dev",
+    "start:entrypoint:dev": "docker compose up -d && bash entrypoint.sh npm run start:dev",
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:create": "cross-env NODE_ENV=production bash entrypoint.sh sequelize db:create",
     "db:create:dev": "cross-env NODE_ENV=development bash entrypoint.sh sequelize db:create",

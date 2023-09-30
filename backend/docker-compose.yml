@@ -213,22 +213,6 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
-  
-  backend:
-    depends_on:
-      es01:
-        condition: service_healthy
-      es02:
-        condition: service_healthy
-      es03:
-        condition: service_healthy
-    build: .
-    ports:
-      - ${PORT}:3000
-    env_file:
-      - .env
-    environment:
-      - ELASTICSEARCH_HOST=es01
 
 volumes:
   certs:
