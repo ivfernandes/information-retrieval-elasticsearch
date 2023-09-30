@@ -2,8 +2,8 @@ import { Client } from '@elastic/elasticsearch';
 import config from 'config';
 
 const elastic = config.get('elastic') as {
-  cloudId: string;
-  username: string;
+  host: string;
+  port: string;
   password: string;
 };
 
@@ -12,8 +12,11 @@ export default class ElasticSearchService {
 
   constructor() {
     this.client = new Client({
-      cloud: { id: elastic.cloudId },
-      auth: { username: elastic.username, password: elastic.password },
+      node: `${elastic.host}:${elastic.port}`,
+      auth: { username: 'elastic', password: elastic.password },
+      tls: {
+        rejectUnauthorized: false,
+      },
     });
   }
 
@@ -32,6 +35,4 @@ export default class ElasticSearchService {
 
     return result.hits.hits;
   }
-
-
 }
