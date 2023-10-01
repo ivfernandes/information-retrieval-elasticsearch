@@ -15,4 +15,18 @@ export default class SearchController {
       return next(error);
     }
   }
+
+  static async searchV2(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> {
+    try {
+      const searchFind = new SearchFind();
+      const response = await searchFind.searchV2(req.query.search as string);
+      return res.json(response);
+    } catch (error) {
+      return next(error);
+    }
+  }
 }

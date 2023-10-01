@@ -20,6 +20,19 @@ export default class ElasticSearchService {
     });
   }
 
+  async findAll(index: string) {
+    const result = await this.client.search({
+      index: index,
+      body: {
+        query: {
+          match_all: {},
+        },
+      },
+    });
+
+    return result.hits.hits;
+  }
+
   async search(index: string, query: string) {
     const result = await this.client.search({
       index: index,
@@ -30,9 +43,57 @@ export default class ElasticSearchService {
             fields: ['title', 'body'],
           },
         },
+        highlight: {
+          fields: {
+            body: {
+              fragment_size: 500,
+              number_of_fragments: 3,
+              pre_tags: ['<b>'],
+              post_tags: ['</b>'],
+            },
+          },
+          boundary_chars: '.,!?\t\n',
+        },
       },
     });
 
     return result.hits.hits;
+  }
+
+  async searchV2(index: string, query: string) {
+    const result = await this.client.search({
+      index: index,
+      body: {
+        query: {
+          multi_match: {
+            query: this.repeatSearchTerms(query),
+            fields: ['title^10', 'body^5'],
+            analyzer: 'portuguese',
+          },
+        },
+        highlight: {
+          fields: {
+            body: {
+              fragment_size: 500,
+              number_of_fragments: 3,
+              pre_tags: ['<b>'],
+              post_tags: ['</b>'],
+            },
+          },
+          boundary_chars: '.,!?\t\n',
+        },
+      },
+    });
+
+    return result.hits.hits;
+  }
+
+  repeatSearchTerms(query: string): string {
+    const words = query.split(' ').reverse();
+    let newQuery = '';
+    words.forEach((word, index) => {
+      newQuery += `${word} `.repeat(index + 1);
+    });
+    return newQuery;
   }
 }
