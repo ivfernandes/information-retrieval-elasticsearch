@@ -6,3 +6,5 @@ export const api = axios.create({
 
 export const getByTerm = async (terms) => api.get(`/api/search?search=${terms}`);
 export const getAllSearch = async () => api.get(`/api/search`);
+export const getByTermV2 = async (terms) => api.get(`/api/search/v2?search=${terms}`);
+export const getAllSearchV2 = async () => api.get(`/api/search/v2`);
