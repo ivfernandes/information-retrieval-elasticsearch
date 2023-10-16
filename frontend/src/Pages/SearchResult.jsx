@@ -1,6 +1,7 @@
 import { useState, Fragment, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { getByTerm } from '../services/api';
+import * as React from 'react';
+import { useParams, useLocation } from 'react-router-dom';
+import { getByTerm, getByTermV2 } from '../services/api';
 import {
     TextField,
     Button,
@@ -10,34 +11,64 @@ import {
     ListItemText,
     Typography,
     Divider,
-    Skeleton
+    Skeleton,
+    Switch,
+    FormGroup,
+    FormControlLabel,
+    FormLabel
 } from '@mui/material';
 
 
 function SearchResult() {
     const { terms } = useParams();
-    const [searchString, setSearchString] = useState('')
-    const [isLoading, setIsLoading] = useState(false)
-    const [results, setResults] = useState([])
-    const [responseTime, setResponseTime] = useState('')
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const v2Param = searchParams.get("v2");
+    const [searchString, setSearchString] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [results, setResults] = useState([]);
+    const [responseTime, setResponseTime] = useState('');
+    const [isV2, setIsV2] = useState(false);
+    const [state, setState] = React.useState({
+        v2: false,
+    });
+
+    const handleChange = (event) => {
+        setState({
+            ...state,
+            [event.target.name]: event.target.checked,
+        });
+        setIsV2(event.target.checked);
+    };
 
     useEffect(() => {
+        setIsV2(v2Param === "true" ? true : false);
         setSearchString(terms);
         fetchTerm(searchString);
-    }, [terms]);
+    }, [terms, v2Param]);
 
     const fetchTerm = async (term) => {
         const startTime = new Date()
         setResponseTime('')
         setIsLoading(true);
         try {
-            const { data } = await getByTerm(term);
-            setResults(data)
-            setIsLoading(false);
-            const endTime = new Date(); // Marca o tempo depois da chamada à API
-            const timeDifference = endTime - startTime;
-            const timeInSeconds = (timeDifference / 1000).toFixed(2);
-            setResponseTime(timeInSeconds + 's')
+            if (isV2) {
+                const { data } = await getByTermV2(term);
+                setResults(data)
+                setIsLoading(false);
+                const endTime = new Date();
+                const timeDifference = endTime - startTime;
+                const timeInSeconds = (timeDifference / 1000).toFixed(2);
+                setResponseTime(timeInSeconds + 's')
+            } else {
+                const { data } = await getByTerm(term);
+                setResults(data)
+                setIsLoading(false);
+                const endTime = new Date();
+                const timeDifference = endTime - startTime;
+                const timeInSeconds = (timeDifference / 1000).toFixed(2);
+                setResponseTime(timeInSeconds + 's')
+            }
         } catch (err) {
             setIsLoading(false);
         }
@@ -102,6 +133,26 @@ function SearchResult() {
                                     >
                                         {result._source.body.length > 500 ? `${result._source.body.slice(0, 500)}...` : result._source.body}
                                     </Typography>
+                                    <br></br>
+                                    <br></br>
+                                    <Typography
+                                        sx={{ display: 'inline' }}
+                                        component="span"
+                                        variant="subtitle2"
+                                        color="text.primary"
+                                    >
+                                        Aparece em:
+                                    </Typography>
+                                    {result.highlight.body.map((highlight, index) => (
+                                        <>
+                                            <div
+                                                key={index}
+                                                dangerouslySetInnerHTML={{ __html: highlight }}
+                                            />
+                                            <br></br>
+                                        </>
+                                    ))}
+
                                 </Fragment>
                             }
                         />
@@ -143,10 +194,21 @@ function SearchResult() {
                     Pesquisar
                 </Button>
             </Grid>
-            <Typography sx={{ width: '37.5%', marginTop: 1, textAlign: 'left'}}>
+
+            <FormGroup row={true} sx={{ width: '37.5%', marginTop: 1, textAlign: 'left' }} >
+                <FormLabel sx={{ marginTop: 1, marginRight: 1.5 }}>V1</FormLabel>
+                <FormControlLabel
+                    value="end"
+                    control={<Switch color="primary" checked={isV2} onChange={handleChange} name="v2" />}
+                    label="V2"
+                    labelPlacement="end"
+                />
+            </FormGroup>
+
+            <Typography sx={{ width: '37.5%', marginTop: 1, textAlign: 'left' }}>
                 Resultado obtido em: {responseTime}
             </Typography>
-            <List sx={{ width: '50%', bgcolor: 'background.paper', marginBottom: 2}}>
+            <List sx={{ width: '50%', bgcolor: 'background.paper', marginBottom: 2 }}>
                 {isLoading ? buildSkeletonList() : buildSearchList()}
             </List>
         </Grid>
