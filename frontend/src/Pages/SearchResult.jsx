@@ -12,9 +12,9 @@ import {
     Typography,
     Divider,
     Skeleton,
-    Switch, 
-    FormGroup, 
-    FormControlLabel, 
+    Switch,
+    FormGroup,
+    FormControlLabel,
     FormLabel
 } from '@mui/material';
 
@@ -31,15 +31,15 @@ function SearchResult() {
     const [isV2, setIsV2] = useState(false);
     const [state, setState] = React.useState({
         v2: false,
-      });
-    
-      const handleChange = (event) => {
+    });
+
+    const handleChange = (event) => {
         setState({
-          ...state,
-          [event.target.name]: event.target.checked,
+            ...state,
+            [event.target.name]: event.target.checked,
         });
         setIsV2(event.target.checked);
-      };
+    };
 
     useEffect(() => {
         setIsV2(v2Param === "true" ? true : false);
@@ -133,6 +133,26 @@ function SearchResult() {
                                     >
                                         {result._source.body.length > 500 ? `${result._source.body.slice(0, 500)}...` : result._source.body}
                                     </Typography>
+                                    <br></br>
+                                    <br></br>
+                                    <Typography
+                                        sx={{ display: 'inline' }}
+                                        component="span"
+                                        variant="subtitle2"
+                                        color="text.primary"
+                                    >
+                                        Aparece em:
+                                    </Typography>
+                                    {result.highlight.body.map((highlight, index) => (
+                                        <>
+                                            <div
+                                                key={index}
+                                                dangerouslySetInnerHTML={{ __html: highlight }}
+                                            />
+                                            <br></br>
+                                        </>
+                                    ))}
+
                                 </Fragment>
                             }
                         />
@@ -175,7 +195,7 @@ function SearchResult() {
                 </Button>
             </Grid>
 
-            <FormGroup row={true} sx={{ width: '37.5%', marginTop: 1, textAlign: 'left'}} >
+            <FormGroup row={true} sx={{ width: '37.5%', marginTop: 1, textAlign: 'left' }} >
                 <FormLabel sx={{ marginTop: 1, marginRight: 1.5 }}>V1</FormLabel>
                 <FormControlLabel
                     value="end"
@@ -185,10 +205,10 @@ function SearchResult() {
                 />
             </FormGroup>
 
-            <Typography sx={{ width: '37.5%', marginTop: 1, textAlign: 'left'}}>
+            <Typography sx={{ width: '37.5%', marginTop: 1, textAlign: 'left' }}>
                 Resultado obtido em: {responseTime}
             </Typography>
-            <List sx={{ width: '50%', bgcolor: 'background.paper', marginBottom: 2}}>
+            <List sx={{ width: '50%', bgcolor: 'background.paper', marginBottom: 2 }}>
                 {isLoading ? buildSkeletonList() : buildSearchList()}
             </List>
         </Grid>
