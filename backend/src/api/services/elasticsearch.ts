@@ -94,6 +94,7 @@ export default class ElasticSearchService {
     words.forEach((word, index) => {
       newQuery += `${word} `.repeat(index + 1);
     });
+    newQuery = newQuery.split(' ').reverse().join(' ');
     return newQuery;
   }
 }
