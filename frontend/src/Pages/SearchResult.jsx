@@ -143,7 +143,7 @@ function SearchResult() {
                                     >
                                         Aparece em:
                                     </Typography>
-                                    {result.highlight.body.map((highlight, index) => (
+                                    {result && result.highlight && result.highlight.body && result.highlight.body.map((highlight, index) => (
                                         <>
                                             <div
                                                 key={index}
