@@ -48,6 +48,7 @@ export default class ElasticSearchService {
             body: {
               fragment_size: 500,
               number_of_fragments: 3,
+              max_analyzed_offset: 1000000,
               pre_tags: ['<b>'],
               post_tags: ['</b>'],
             },
@@ -76,6 +77,7 @@ export default class ElasticSearchService {
             body: {
               fragment_size: 500,
               number_of_fragments: 3,
+              max_analyzed_offset: 1000000,
               pre_tags: ['<b>'],
               post_tags: ['</b>'],
             },
